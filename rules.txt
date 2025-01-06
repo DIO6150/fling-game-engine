@@ -1,0 +1,13 @@
+order of include directive is :
+    <>
+    ""
+    "file.h"
+
+pointer is on glued to the type
+
+stucture names shall be typedef before their definition
+stucture names shall begin with the mge_s_ suffix and the name is written in snake_case
+
+function should return the corresponding type or an enum of EMgeError type
+
+all init and free functions shall return an error code
