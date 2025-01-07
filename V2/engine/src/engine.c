@@ -1,55 +1,66 @@
 #include "engine.h"
 
+#include "cglm/cglm.h"
 
-
-MGEEngine mgeEngineInit ()
+FGEEngine* FGEEngineNew ()
 {
-    MGEEngine* engine = malloc (sizeof (MGEEngine));
+    FGEEngine* engine = malloc (sizeof (FGEEngine));
+
+    return (engine);
 }
 
-MGEError mgeEngineFree (MGEEngine* _in_engine)
+FGEError FGEEngineDelete (FGEEngine* in_engine)
 {
+    FGEContextDelete (in_engine->context);
+    FGEEventHandlerDelete (in_engine->event_handler);
 
+    free (in_engine);
+
+    return (0);
 }
 
-MGEError mgeEngineSetConfig (MGEEngine* _in_engine, MGEEngineConfig _in_config)
+FGEError FGEEngineSetConfig (FGEEngine* in_engine, FGEEngineConfig in_config)
 {
     // TODO : Clean the engine before config
 
-    _in_engine->context = mgeContextInit(_in_config.title, _in_config.size_w, _in_config.size_h);
-    _in_engine->event_manager = mgeEventManagerInit(_in_engine);
-    _in_engine->view_type = _in_config.type;
-    _in_engine->projection_matrix; // brrrr
-    _in_engine->zoom = 1.0f;
-    _in_engine->cameras = mgeArrayInit(sizeof (MGECamera));
+    in_engine->context = FGEContextNew (in_config.title, in_config.size_w, in_config.size_h);
+    in_engine->event_handler = FGEEventHandlerNew (in_engine);
+    in_engine->view_type = in_config.type;
+    
+    glm_mat4_zero(in_engine->projection_matrix);
+
+    in_engine->zoom_level = 1.0f;
+    in_engine->cameras = FGECameraVectorNew (NULL);
+
+    return (FGE_E_SUCCESS);
 }
 
-MGEError mgeEngineConfigureBatch (MGEEngine* _in_engine, int _in_index, MGEBatchParam _in_param)
+FGEError FGEEngineConfigureBatch (FGEEngine* in_engine, int in_index, FGEBatchParam in_param)
 {
-
+    return (0);
 }
 
-MGEError mgeEngineLoadTexture (MGEEngine* _in_engine, const char* _in_path)
+FGEError FGEEngineLoadTexture (FGEEngine* in_engine, const char* in_path)
 {
-
+    return (0);
 }
 
-void mgeEngineResizeWindow (MGEEngine* _in_engine)
+void FGEEngineResizeWindow (FGEEngine* in_engine)
 {
-
+    return;
 }
 
-void mgeEngineZoom (MGEEngine* _in_engine, float _in_zoom);
+void FGEEngineZoom (FGEEngine* in_engine, float in_zoom)
 {
-
+    return;
 }
 
-void mgeEngineSetZoom (MGEEngine* _in_engine, float _in_zoom)*
+void FGEEngineSetZoom (FGEEngine* in_engine, float in_zoom)
 {
-
+    return;
 }
 
-void mgeEngineRender (MGEEngine* _in_engine)
+void FGEEngineRender (FGEEngine* in_engine)
 {
-
+    return;
 }

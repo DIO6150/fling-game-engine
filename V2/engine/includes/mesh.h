@@ -1,20 +1,20 @@
-#ifndef H_MGE_MESH
-#define H_MGE_MESH
+#ifndef H_FGE_MESH
+#define H_FGE_MESH
 
 #include "vertex.h"
-#include "texture_array_2D.h"
+#include "tex_array.h"
 #include "texture_animation.h"
 
 #include "cglm/cglm.h"
 #include "cglm/mat4.h"
 
-typedef struct MGEMesh MGEMesh;
+typedef struct FGEMesh FGEMesh;
 
-struct MGEMesh
+struct FGEMesh
 {
     unsigned int index;
 
-    Vertex* vertices;
+    FGEVertex* vertices;
     int vertex_count;
 
     unsigned int* indices;
@@ -36,18 +36,18 @@ struct MGEMesh
 
 };
 
-MGEMesh* mgeMeshInit (unsigned int _in_index, Vertex* _in_vertices, unsigned int* _in_indices, int _in_vertex_count,
-                        int _in_index_count, int _in_tag, TextureAnimation _in_animation);
-MGEError mgeMeshFree (MGEMesh* _in_mesh);
+FGEMesh* FGEMeshNew (FGEVertex* in_vertices, unsigned int* in_indices,
+                    int in_vertex_count, int in_index_count,
+                    int in_tag,
+                    TextureAnimation in_animation);
+FGEError FGEMeshDelete (FGEMesh* in_mesh);
 
-int mgeMeshChangeColor (MGEMesh* _in_mesh, vec3 _in_color);
+void FGEMeshTranslate (FGEMesh* in_mesh, vec3 in_translation);
+void FGEMeshRotate (FGEMesh* in_mesh, float theta, vec3 in_axis);
+void FGEMeshScale (FGEMesh* in_mesh, vec3 in_scale);
 
-void mgeMeshTranslate (MGEMesh* _in_mesh, vec3 _in_translation);
-void mgeMeshRotate (MGEMesh* _in_mesh, float theta, vec3 _in_axis);
-void mgeMeshScale (MGEMesh* _in_mesh, vec3 _in_scale);
+void FGEMeshSetScale (FGEMesh* in_mesh, vec3 in_scale);
 
-void mgeMeshSetScale (MGEMesh* _in_mesh, vec3 _in_scale);
-
-void mgeMeshGetMatrix (MGEMesh* _in_mesh, mat4 matrix);
+void FGEMeshGetMatrix (FGEMesh* in_mesh, mat4 matrix);
 
 #endif

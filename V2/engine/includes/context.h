@@ -1,26 +1,18 @@
-#ifndef H_MGE_CONTEXT
-#define H_MGE_CONTEXT
+#ifndef HEADER_FGE_CONTEXT
+#define HEADER_FGE_CONTEXT
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include "common.h"
+#include "common/common.h"
 
 /*
     The context is used to create a window.
 */
 
-#ifndef MGE_WINDOW_TITLE
-#define MGE_WINDOW_TITLE "MAEL GAME ENGINE"
-#endif
+typedef struct FGEContext FGEContext;
 
-#ifndef MGE_WINDOW_SIZE
-#define MGE_WINDOW_SIZE 800
-#endif
-
-typedef struct MGEContext MGEContext;
-
-struct MGEContext
+struct FGEContext
 {
     GLFWwindow* window;
     const char* name;
@@ -28,10 +20,18 @@ struct MGEContext
     int height;
 };
 
-MGEContext mgeContextInit (char* _in_title, int _in_width, int _in_height);
-MGEError mgeContextFree (MGEContext* _in_context);
+FGEContext* FGEContextNew (char* in_title, int in_width, int in_height);
+FGEError FGEContextDelete (FGEContext* in_context);
 
-MGEBool mgeContextShouldClose (MGEContext* _in_context);
-MGEBool mgeContextIsFocused (MGEContext* _in_context);
+FGEBool FGEContextShouldClose (FGEContext* in_context);
+FGEBool FGEContextIsFocused (FGEContext* in_context);
+
+#ifndef FGE_WINDOW_TITLE
+    #define FGE_WINDOW_TITLE "FLING GAME ENGINE"
+#endif
+
+#ifndef FGE_WINDOW_SIZE
+    #define FGE_WINDOW_SIZE 800
+#endif
 
 #endif

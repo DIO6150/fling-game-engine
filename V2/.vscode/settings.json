@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "batch.C": "cpp"
-    }
+    },
+    "cmake.ignoreCMakeListsMissing": true
 }

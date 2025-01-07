@@ -1,27 +1,28 @@
-#ifndef H_MGE_BATCH
-#define H_MGE_BATCH
+#ifndef HEADER_FGE_BATCH
+#define HEADER_FGE_BATCH
 
-#include "common.h"
+#include "common/common.h"
+#include "common/vector_impl.h"
 #include "mesh.h"
 #include "shader.h"
 
-typedef struct MGEBatch MGEBatch;
-typedef struct MGEBatchParam MGEBatchParam;
+typedef struct FGEBatch FGEBatch;
+typedef struct FGEBatchParam FGEBatchParam;
 
-struct MGEBatch
+struct FGEBatch
 {
-    int batch_id; // The unique id of the MGEBatch
-    int persistent; // Does the MGEBatch "flush" its data after each render call
+    int batch_id; // The unique id of the FGEBatch
+    int persistent; // Does the FGEBatch "flush" its data after each render call
 
-    MGEArray mesh_cache; // Cache of all the meshes renderered by the MGEBatch
+    FGEMeshVector mesh_cache; // Cache of all the meshes renderered by the FGEBatch
 
-    MGEShader shader; // Shader used by the entire MGEBatch
+    FGEShader shader; // Shader used by the entire FGEBatch
     
     int mesh_max_count; // max number of mesh
     int vertex_max_count; // number of max verticies in the vbo
     int index_max_count; // number of max indicies in the ebo
 
-    int mesh_count; // number of mesh in the MGEBatch
+    int mesh_count; // number of mesh in the FGEBatch
     int vertex_count; // number of verticies in the vbo
     int index_count; // number of indicies in the ebo
 
@@ -35,21 +36,21 @@ struct MGEBatch
 
 };
 
-struct MGEBatchParam
+struct FGEBatchParam
 {
     int persistent;
-    MGEShader* shader;
+    FGEShader* shader;
 };
 
-MGEError mgeBatchInit(int _in_batch_id, MGEBatch** _out_batch);
-MGEError mgeBatchFree(MGEBatch* _in_batch);
+FGEBatch* FGEBatchNew (int in_batch_id);
+FGEError FGEBatchDelete (FGEBatch* in_batch);
 
-MGEError mgeBatchBindBuffers(MGEBatch* _in_batch);
-MGEError mgeBatchUnbindBuffers();
-MGEError mgeBatchResize(MGEBatch* _in_batch, int _in_mesh_count, int _in_vertex_count, int _in_index_count);
+FGEError FGEBatchBindBuffers(FGEBatch* in_batch);
+FGEError FGEBatchUnbindBuffers();
+FGEError FGEBatchResize(FGEBatch* in_batch, int in_mesh_count, int in_vertex_count, int in_index_count);
 
-MGEError mgeBatchPushMesh(MGEBatch* _in_batch, MGEMesh* _in_mesh);
+FGEError FGEBatchPushMesh(FGEBatch* in_batch, FGEMesh* in_mesh);
 
-MGEError mgeBatchReset(MGEBatch* _in_batch, int _in_override);
+FGEError FGEBatchReset(FGEBatch* in_batch, int in_override);
 
 #endif

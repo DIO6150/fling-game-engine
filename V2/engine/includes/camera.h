@@ -1,17 +1,17 @@
-#ifndef MGE_CAMERA_H
-#define MGE_CAMERA_H
+#ifndef HEADER_FGE_CAMERA
+#define HEADER_FGE_CAMERA
 
 #include "cglm/cglm.h"
 
-#include "common.h"
+#include "common/common.h"
 
 /*
-    The camera class (?)
+    The camera class  (?)
 */
 
-typedef struct MGECamera MGECamera;
+typedef struct FGECamera FGECamera;
 
-struct MGECamera
+struct FGECamera
 {
     vec3 camera_up;
     vec3 camera_front;
@@ -21,20 +21,21 @@ struct MGECamera
     float pitch;
 };
 
-MGEError mgeCameraInit(MGECamera* _out_camera, vec3 _in_origin);
-MGEError mgeCameraFree(MGECamera* _in_camera);
+FGECamera FGECameraNew (vec3 in_origin);
+FGEError FGECameraFree (FGECamera* in_camera);
 
-void mgeCameraMove(MGECamera* _in_camera, vec3 _in_pos);
-void mgeCameraMoveFromFront(MGECamera* _in_camera, vec3 _in_pos);
-void mgeCameraMoveFromUp(MGECamera* _in_camera, vec3 _in_pos);
-void mgeCameraMoveFromRight(MGECamera* _in_camera, vec3 _in_pos);
+/* Redo this because ugly as hell */
+FGEError FGECameraMove (FGECamera* in_camera, vec3 in_pos);
+FGEError FGECameraMoveFromFront (FGECamera* in_camera, vec3 in_pos);
+FGEError FGECameraMoveFromUp (FGECamera* in_camera, vec3 in_pos);
+FGEError FGECameraMoveFromRight (FGECamera* in_camera, vec3 in_pos);
 
-void mgeCameraLook(MGECamera* _in_camera, float _in_yaw, float _in_pitch);
+FGEError FGECameraLook (FGECamera* in_camera, float in_yaw, float in_pitch);
 
-void mgeCameraSetPos(MGECamera* _in_camera, vec3 _in_pos);
-void mgeCameraSetLook(MGECamera* _in_camera, float _in_yaw, float _in_pitch);
+FGEError FGECameraSetPos (FGECamera* in_camera, vec3 in_pos);
+FGEError FGECameraSetLook (FGECamera* in_camera, float in_yaw, float in_pitch);
 
-void mgeCameraUpdate(MGECamera* _in_camera);
-void mgeCameraGetView(MGECamera* _in_camera, mat4 _out_view);
+FGEError FGECameraUpdate (FGECamera* in_camera);
+FGEError FGECameraGetView (FGECamera* in_camera, mat4 _out_view);
 
 #endif

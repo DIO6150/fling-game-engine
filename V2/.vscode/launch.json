@@ -6,7 +6,7 @@
     "configurations":
     [
         {
-            "name": "C++ Launch (Linux)",
+            "name": "C Launch (Linux)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/EngineTest",
@@ -22,6 +22,24 @@
                 "MIMode": "gdb",
                 "miDebuggerPath": "/usr/bin/gdb"
             }
-          }
+        },
+        {
+            "name": "C Launch (Windows)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/EngineTest.exe",
+            "externalConsole": false,
+            "cwd": "${workspaceFolder}/bin",
+            "environment": [
+                {
+                    "name": "config",
+                    "value": "Debug"
+                }
+            ],
+            "windows": {
+                "MIMode": "gdb",
+                "miDebuggerPath": "C:\\Users\\maele\\mingw64\\bin\\gdb.exe"
+            }
+        }
     ]
 }

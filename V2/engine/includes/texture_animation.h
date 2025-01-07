@@ -1,7 +1,7 @@
-#ifndef H_MGE_ANIMATION
-#define H_MGE_ANIMATION
+#ifndef HEADER_FGE_ANIMATION
+#define HEADER_FGE_ANIMATION
 
-#include "texture_array_2D.h"
+#include "tex_array.h"
 
 typedef struct TexAnimState TexAnimState;
 typedef struct TextureAnimation TextureAnimation;
@@ -11,22 +11,22 @@ typedef struct TextureAnimation TextureAnimation;
 struct TexAnimState
 {
     char* name;
-    MGETextureQuad** frames;
+    FGETexQuad** frames;
     int current_frame;
     int frame_count;
     double speed;
 };
 
-TexAnimState mgeTexAnimStateCreate(MGETextureArray2D* _in_atlas, int _in_speed, char* name, int frame_count, ...);
-MGETextureQuad* mgeTexAnimStateSpriteCreate(char* _in_name, MGETextureArray2D* _in_array);
-int mgeTexAnimStateFree(TexAnimState* _in_state);
+TexAnimState FGETexAnimStateCreate(FGETexArray* in_atlas, int in_speed, char* name, int frame_count, ...);
+FGETexQuad* FGETexAnimStateSpriteCreate(char* in_name, FGETexArray* in_array);
+int FGETexAnimStateFree(TexAnimState* in_state);
 
 struct TextureAnimation
 {
     TexAnimState* states;
     char* name;
 
-    MGETextureArray2D* array;
+    FGETexArray* array;
 
     int state_count;
     int state_max_count;
@@ -36,17 +36,17 @@ struct TextureAnimation
     double anim_time;
 };
 
-int mgeAnimationCreate(TextureAnimation** _out_animation, TextureArray2D* _in_array, char* _in_name);
-int mgeAnimationFree(TextureAnimation* _in_animation);
+int FGEAnimationCreate(TextureAnimation** out_animation, FGETexArray* in_array, char* in_name);
+int FGEAnimationFree(TextureAnimation* in_animation);
 
-int mgeAnimationAddState(TextureAnimation* _in_animation, TexAnimState _in_state);
-int mgeAnimationSetCurrentState(TextureAnimation* _in_animation, char* _in_name);
+int FGEAnimationAddState(TextureAnimation* in_animation, TexAnimState in_state);
+int FGEAnimationSetCurrentState(TextureAnimation* in_animation, char* in_name);
 
-TextureQuad* mgeAnimationGetQuad(TextureAnimation* _in_animation);
+FGETexQuad* FGEAnimationGetQuad(TextureAnimation* in_animation);
 
-int mgeAnimationScroll(TextureAnimation* _in_animation, double _in_delta_time);
+int FGEAnimationScroll(TextureAnimation* in_animation, double in_delta_time);
 
-int mgeAnimationGetFrame(TextureAnimation* _in_animation);
-int mgeAnimationGetFrameCount(TextureAnimation* _in_animation);
+int FGEAnimationGetFrame(TextureAnimation* in_animation);
+int FGEAnimationGetFrameCount(TextureAnimation* in_animation);
 
 #endif

@@ -1,7 +1,10 @@
-#ifndef H_MGE_VERTEX
-#define H_MGE_VERTEX
+#ifndef HEADER_FGE_VERTEX
+#define HEADER_FGE_VERTEX
 
-typedef struct
+typedef struct FGEVertex FGEVertex;
+
+
+struct FGEVertex
 {
     float x;
     float y;
@@ -13,6 +16,6 @@ typedef struct
     float r;
     float g;
     float b;
-} Vertex;
+};
 
 #endif
