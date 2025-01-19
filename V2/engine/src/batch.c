@@ -10,4 +10,3 @@ struct DrawCommand
     int base_vertex;
     unsigned int base_instance;
 };
-

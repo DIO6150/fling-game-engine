@@ -7,7 +7,7 @@ int main (int argc, char** argv)
 
     printf ("Hello World !\n");
 
-    FGEEngine* engine = FGEEngineNew ();
+    FGEEngine engine;
 
     FGEEngineConfig config;
     config.size_w = 400;
@@ -15,14 +15,26 @@ int main (int argc, char** argv)
     config.title = "assignement ?";
     config.type = FGE_PERSPECTIVE;
 
-    FGEEngineSetConfig (engine, config);
+    FGEEngineInit (&engine, config);
 
-    while (!FGEContextShouldClose (engine->context))
+    FGEVertex vertices[3] = {
+        {0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0},
+        {0.5, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0},
+        {0.5, 0.5, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0}
+    };
+
+    FGEMesh* triangle = FGEMeshNew (vertices, (unsigned int[3]){0, 1, 2}, 3, 3, (TextureAnimation) {0});
+
+    FGEEngineAddMesh (&engine, triangle);
+
+    while (!FGEContextShouldClose (engine.context))
     {
         glfwPollEvents ();
+
+        FGEEngineRender (&engine);
     }
 
-    FGEEngineDelete (engine);
+    FGEEngineDestroy (&engine);
 
     return (1);
 }

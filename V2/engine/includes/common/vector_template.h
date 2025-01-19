@@ -86,7 +86,7 @@ static inline FGEError FLING_VECTOR_DELETE (FLING_VECTOR_NAME* in_vector)
     return (FGE_E_SUCCESS);
 }
 
-static inline FGEError FLING_VECTOR_PUSH (FLING_VECTOR_NAME* in_vector, void* in_data)
+static inline FGEError FLING_VECTOR_PUSH (FLING_VECTOR_NAME* in_vector, FLING_VECTOR_TYPE in_data)
 {
     if ((in_vector->m_size + 1) * sizeof (FLING_VECTOR_TYPE) > FGE_VECTOR_SIZE_LIMIT) 
         return (FGE_E_CONTAINER_LIMIT);
@@ -97,11 +97,7 @@ static inline FGEError FLING_VECTOR_PUSH (FLING_VECTOR_NAME* in_vector, void* in
         in_vector->m_data = (FLING_VECTOR_TYPE*) realloc (in_vector->m_data, in_vector->m_max_size);
     }
 
-    void* start = in_vector->m_data + in_vector->m_size * sizeof (FLING_VECTOR_TYPE);
-
-    memcpy (start, in_data, sizeof (FLING_VECTOR_TYPE));    
-
-    in_vector->m_size ++;
+    in_vector->m_data [in_vector->m_size++] = in_data;
 
     return (FGE_E_SUCCESS);
 }

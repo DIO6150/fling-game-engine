@@ -14,6 +14,7 @@ enum FGEError
     FGE_E_CONTAINER_LIMIT = 6,
     FGE_E_CONTAINER_OUTSIDE_RANGE = 7,
     FGE_E_CONTAINER_EMPTY = 8,
+    FGE_E_NULL = 9
 };
 
 #endif

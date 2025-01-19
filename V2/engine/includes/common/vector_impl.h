@@ -1,8 +1,10 @@
 #ifndef HEADER_FLING_VECTOR_IMPL
 #define HEADER_FLING_VECTOR_IMPL
 
-#include "mesh.h"
-#include "camera.h"
+/* Forward Declare */
+typedef struct FGEMesh FGEMesh;
+typedef struct FGECamera FGECamera;
+typedef struct FGEBatch FGEBatch;
 
 #define FLING_VECTOR_TYPE int
 #define FLING_VECTOR_PREFIX Int
@@ -18,9 +20,6 @@
 #define FLING_VECTOR_PREFIX Camera
 
 #include "common/vector_template.h"
-
-/* Forward Declare */
-typedef struct FGEBatch FGEBatch;
 
 #define FLING_VECTOR_TYPE FGEBatch*
 #define FLING_VECTOR_PREFIX Batch

@@ -46,8 +46,8 @@ struct FGEEngineConfig
     FGEViewType type;
 };
 
-FGEEngine* FGEEngineNew ();
-FGEError FGEEngineDelete (FGEEngine* in_engine);
+FGEError FGEEngineInit (FGEEngine* out_engine, FGEEngineConfig in_config);
+FGEError FGEEngineDestroy (FGEEngine* in_engine);
 
 FGEError FGEEngineSetConfig (FGEEngine* in_engine, FGEEngineConfig in_config);
 
@@ -59,6 +59,8 @@ void FGEEngineResizeWindow (FGEEngine* in_engine);
 
 void FGEEngineZoom (FGEEngine* in_engine, float in_zoom);
 void FGEEngineSetZoom (FGEEngine* in_engine, float in_zoom);
+
+void FGEEngineAddMesh (FGEEngine* in_engine, FGEMesh* mesh);
 
 void FGEEngineRender (FGEEngine* in_engine);
 

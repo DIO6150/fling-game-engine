@@ -38,7 +38,6 @@ struct FGEMesh
 
 FGEMesh* FGEMeshNew (FGEVertex* in_vertices, unsigned int* in_indices,
                     int in_vertex_count, int in_index_count,
-                    int in_tag,
                     TextureAnimation in_animation);
 FGEError FGEMeshDelete (FGEMesh* in_mesh);
 

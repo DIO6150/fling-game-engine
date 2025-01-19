@@ -47,7 +47,7 @@ FGEContext* FGEContextNew (char* in_title, int in_width, int in_height)
     glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint (GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
-    context->window = glfwCreateWindow (in_width, in_height, FGE_WINDOW_TITLE, NULL, NULL);
+    context->window = glfwCreateWindow (in_width, in_height, in_title, NULL, NULL);
 
     context->width = in_width;
     context->height = in_height;
