@@ -3,11 +3,13 @@
 #include "glad/glad.h"
 
 #include "mesh.hpp"
+#include "shader.hpp"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
 #include <stdexcept>
+#include <string>
 
 namespace FGE
 {
@@ -29,8 +31,7 @@ namespace FGE
         unsigned int m_matrix_ssbo;
         unsigned int m_tex_coord_ssbo;
 
-        unsigned int m_shader;
-
+        Shader* m_shader = nullptr;
 
         unsigned int m_index_count = 0;
         unsigned int m_vertex_count = 0;
@@ -41,39 +42,7 @@ namespace FGE
         unsigned int m_max_mesh_count = 0;
     
     public:
-        Batch()
-        {
-            glGenVertexArrays(1, &m_vao);
-
-            glGenBuffers (1, &m_vbo);
-            glGenBuffers (1, &m_ebo);
-            glGenBuffers (1, &m_dibo);
-
-            glGenBuffers (1, &m_matrix_ssbo);
-            glGenBuffers (1, &m_tex_coord_ssbo);
-
-            BindBuffers ();
-
-            glNamedBufferData (m_vbo, 1, NULL, GL_DYNAMIC_DRAW);
-            glNamedBufferData (m_ebo, 1, NULL, GL_DYNAMIC_DRAW);
-            glNamedBufferData (m_dibo, 1, NULL, GL_DYNAMIC_DRAW);
-
-            glBindBuffer (GL_SHADER_STORAGE_BUFFER, m_matrix_ssbo);
-            glNamedBufferData (m_matrix_ssbo, 1, NULL, GL_DYNAMIC_DRAW);
-
-            glBindBuffer (GL_SHADER_STORAGE_BUFFER, m_tex_coord_ssbo);
-            glNamedBufferData (m_tex_coord_ssbo, 1, NULL, GL_DYNAMIC_DRAW);
-
-            // TODO : Allow custom vertex
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof (float), (void*)(0));
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof (float), (void*)(3 * sizeof (float)));
-
-            glEnableVertexAttribArray (0);
-            glEnableVertexAttribArray (1);
-            glEnableVertexAttribArray (2);
-
-            UnbindBuffers ();
-        }
+        Batch(std::string shader_key);
 
         ~Batch()
         {
@@ -188,16 +157,16 @@ namespace FGE
             command.base_instance = 0;
 
             // Vertex Data
-            glNamedBufferSubData (m_vbo, m_vertex_count * sizeof (Vertex), m_vertex_count * sizeof (Vertex), mesh->GetVertices ().data ());
+            glNamedBufferSubData (m_vbo, m_vertex_count * sizeof (Vertex), mesh->GetVertices ().size () * sizeof (Vertex), mesh->GetVertices ().data ());
 
             // Index Data
-            glNamedBufferSubData (m_ebo, m_index_count * sizeof (int), m_index_count * sizeof (int), mesh->GetIndices ().data ());
+            glNamedBufferSubData (m_ebo, m_index_count * sizeof (int), mesh->GetIndices ().size () * sizeof (int), mesh->GetIndices ().data ());
 
             // Draw Command Data
             glNamedBufferSubData (m_dibo, m_meshes.size () * sizeof (DrawCommand), sizeof (DrawCommand), &command);
 
             // Matrix Data
-            glm::mat4 &model_matrix = mesh->GetMatrix ();
+            glm::mat4 model_matrix = mesh->GetMatrix ();
             glBindBuffer (GL_SHADER_STORAGE_BUFFER, m_matrix_ssbo);
             glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 0, m_matrix_ssbo);
             glNamedBufferSubData (m_matrix_ssbo, m_meshes.size () * sizeof (glm::mat4), sizeof (glm::mat4), glm::value_ptr(model_matrix));
@@ -212,5 +181,8 @@ namespace FGE
             m_index_count += mesh->GetIndices ().size ();
             m_vertex_count += mesh->GetVertices ().size ();
         }
+
+        size_t GetVertexCount () { return (m_meshes.size ()); }
+        Shader* GetShader () { return (m_shader); }
     };
 }

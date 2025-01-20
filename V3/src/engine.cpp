@@ -3,55 +3,90 @@
 
 #include "engine.hpp"
 
-#include "game_object.hpp"
 
 FGE::Engine::~Engine()
 {
     std::cout << "engine destroyed" << std::endl;
-}
 
-void FGE::Engine::PrintDebug ()
-{
-    for (auto t : m_game_objects)
+    for (auto it : m_game_objects)
     {
-        for (auto e : t.second)
-        {
-            std::string &value = ((GameObject<std::string>*)e.second)->m_object;
-            std::cout << e.first << " : " << value << std::endl;
-        }
+        delete it.second;
     }
 }
+
+bool FGE::Engine::ShouldWindowClose ()
+{
+    return (glfwWindowShouldClose ( Engine::GetInstance()->m_context->GetWindow()));
+}
+
+std::shared_ptr<FGE::Scene> FGE::Engine::GetActiveScene () 
+{
+    return (Engine::GetInstance()->active_scene);
+}
+
+void FGE::Engine::UploadMesh (std::string key, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scaling)
+{
+    FGE::Engine::GetActiveScene ()->UploadMesh (key, translation, rotation, scaling);
+}
+
+void FGE::Engine::LoadBatches (std::string shader_key)
+{
+    Engine* engine = Engine::GetInstance();
+
+    // TODO auto batch id
+
+    Batch batch (shader_key);
+
+    for (Mesh& it : engine->active_scene->GetMeshes() )
+    {
+        batch.PushMesh (&it);
+    }
+
+    engine->m_batches.push_back (batch);
+}
+
 
 void FGE::Engine::Render ()
 {
-    // Get Camera View
+    Engine* engine = Engine::GetInstance();
+
+    // TODO : Camera class
+    glm::mat4 view;
+    view = glm::lookAt(glm::vec3(0.0, 0.0, 3.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+
+    glm::mat4 projection;
+    projection = glm::perspective(glm::radians (45.0f), 1.0f, 0.1f, 100.0f);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
     // For each batches
+    for (Batch& batch : engine->m_batches)
+    {
         // bind buffers from the batches
+        batch.BindBuffers ();
+
         // use corresponding shader
+        batch.GetShader ()->Use ();
+
         // upload uniforms
+        batch.GetShader ()-> UploadMatrix4 ("uProjection", projection);
+        batch.GetShader ()-> UploadMatrix4 ("uView", view);
+
         // activate the texture atlas
         // bind texture atlas
+        
         // glMultiDrawElementIndirect
+        glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, NULL, batch.GetVertexCount (), 0);
+        
         // cancel the shader
+        batch.GetShader ()->Cancel ();
+
         // empty the batches if necessary
 
-}
-
-void FGE::Engine::LoadBatches ()
-{
-    if (m_game_objects.find ("Mesh") == m_game_objects.end ()) return;
-
-    auto &meshes = m_game_objects["Mesh"];
-
-    // TODO : when the renderer is more advanced, load many batches
-
-    Batch batch;
-
-    for (auto& it : meshes)
-    {
-        batch.PushMesh ((GameObject<Mesh>*)(it.second)->object)
+        batch.UnbindBuffers ();
     }
 
-    m_batches.push_back ();
+    glfwSwapBuffers(engine->m_context->GetWindow());
+
 }

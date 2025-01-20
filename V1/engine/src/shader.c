@@ -10,7 +10,6 @@ int mgeShaderLoad(char* _in_vertex_path, char* _in_fragment_path, Shader **_out_
 {
     FILE* fvertex;
     FILE* ffragment;
-
     
     char vertex_source[1000];
     char fragment_source[1000];
