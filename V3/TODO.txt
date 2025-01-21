@@ -1,0 +1,20 @@
+
+- Batch could be assigned automatically based on Mesh material/shader
+- Batch could be assigned without the call to FGE::Engine::LoadBatches
+- Batch could be created without the user needing to call FGE::Engine::CreateBatch
+- Batch could have multiple atlases assigned
+- Make instance rendering work
+- Create a camera class
+- Add Collidable and physic simulation
+- Add uniform cache in shader class
+- Allow mesh to have custom vertex attribute
+- Allow engine to upload custom uniform (flexible render pipeline)
+- Reorganize files according to their dependencies and relevance (core, data, etc...)
+- Make a logging class
+- Trouver un remplaçant au lieu de invalid_argument dans FGE::Batch::Resize
+- UpdateMatrix should take a FGE::Mesh instead of the relevant data for consistency
+- Add a move/copy/=operator to all of my classes (consistency + probably better anyway)
+- Add more wrapper functions in FGE::Context
+- Continue to add relevant Doxygen docs to all class methods
+- Make the iterators work in the FGE::ObjectArray class
+- Make a simple all purpose container class (like the thing in FGE::Engine used to register object)

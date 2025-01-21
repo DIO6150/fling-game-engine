@@ -5,6 +5,10 @@ layout(std430, binding = 0) buffer u_ModelMatrices
 {
     mat4 matrices[];
 };
+layout(std430, binding = 1) buffer u_TexCoords
+{
+    vec4 coords[];
+};
 
 uniform mat4 uProjection;
 uniform mat4 uView;
@@ -15,5 +19,5 @@ void main()
 {
     vec4 pos = uProjection * uView * matrices[gl_DrawID] * vec4(aPos, 1.0);
     gl_Position = pos;
-    oTexCoords = aTexCoords;
+    oTexCoords = aTexCoords * coords[gl_DrawID].zw + coords[gl_DrawID].xy;
 };

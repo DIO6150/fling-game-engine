@@ -33,6 +33,8 @@ namespace FGE
         std::vector<std::shared_ptr<Scene>> m_scenes;
         std::shared_ptr<Scene> active_scene;
 
+        // cached data
+
     public:
         Engine(const Engine& obj) = delete;
         static Engine* GetInstance ()
@@ -56,8 +58,10 @@ namespace FGE
 
         static std::shared_ptr<Scene> GetActiveScene ();
 
+        static void CreateBatch (std::string shader_key, std::string atlas_key);
+
         template <class T>
-        static void RegisterGameObject (std::string key, T& game_object)
+        static void RegisterGameObject (std::string key, T game_object)
         {
             Engine* engine = Engine::GetInstance();
 
@@ -104,9 +108,14 @@ namespace FGE
             return (inner->Find (key));
         }
 
-        static void UploadMesh (std::string key, glm::vec3 translation = {0.0, 0.0, 0.0}, glm::vec3 rotation = {0.0, 0.0, 0.0}, glm::vec3 scaling = {1.0, 1.0, 1.0});
+        static Mesh* UploadMesh (std::string key, glm::vec3 translation = {0.0, 0.0, 0.0}, glm::vec3 rotation = {0.0, 0.0, 0.0}, glm::vec3 scaling = {1.0, 1.0, 1.0});
+        static void UpdateScene (std::vector<Mesh*> updated);
 
         static void LoadBatches (std::string shader_key);
+
+        static void TranslateMesh (Mesh* mesh, glm::vec3 vector, bool keep = true);
+        static void RotateMesh (Mesh* mesh, glm::vec3 vector, bool keep = true);
+        static void ScaleMesh (Mesh* mesh, glm::vec3 vector, bool keep = true);
         
         static void Render ();
     };

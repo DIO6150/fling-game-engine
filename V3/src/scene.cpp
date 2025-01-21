@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include "mesh.hpp"
+
 FGE::Scene::Scene ()
 {
 
@@ -14,7 +16,7 @@ FGE::Scene::~Scene ()
 
 }
 
-void FGE::Scene::UploadMesh (std::string key, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scaling)
+FGE::Mesh* FGE::Scene::UploadMesh (std::string key, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scaling)
 {
     Engine* engine = Engine::GetInstance ();
 
@@ -28,5 +30,10 @@ void FGE::Scene::UploadMesh (std::string key, glm::vec3 translation, glm::vec3 r
         m_meshes.back ().Scale (scaling);
     }
 
-    printf ("Scene : Mesh vector of size %ld\n", m_meshes.size ());
+    return (&m_meshes.back());
 }
+
+std::vector<FGE::Mesh>& FGE::Scene::GetMeshes ()
+{
+    return m_meshes;
+};

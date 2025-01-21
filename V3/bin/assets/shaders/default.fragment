@@ -3,7 +3,9 @@
 in vec2 oTexCoords;
 out vec4 FragColor;
 
+uniform sampler2DArray uAtlas;
+
 void main()
 {
-    FragColor = vec4 (oTexCoords.xy, 0.0, 1.0);
+    FragColor = texture(uAtlas, vec3(oTexCoords, 0.0));
 };

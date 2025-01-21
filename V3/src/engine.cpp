@@ -3,6 +3,8 @@
 
 #include "engine.hpp"
 
+FGE::Engine* FGE::Engine::m_instance = nullptr;
+std::mutex FGE::Engine::m_mtx;
 
 FGE::Engine::~Engine()
 {
@@ -24,9 +26,28 @@ std::shared_ptr<FGE::Scene> FGE::Engine::GetActiveScene ()
     return (Engine::GetInstance()->active_scene);
 }
 
-void FGE::Engine::UploadMesh (std::string key, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scaling)
+void FGE::Engine::CreateBatch (std::string shader_key, std::string atlas_key)
 {
-    FGE::Engine::GetActiveScene ()->UploadMesh (key, translation, rotation, scaling);
+    Engine* engine = Engine::GetInstance();
+
+    engine->m_batches.push_back (Batch (shader_key, atlas_key));
+}
+
+FGE::Mesh* FGE::Engine::UploadMesh (std::string key, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scaling)
+{
+    return (FGE::Engine::GetActiveScene ()->UploadMesh (key, translation, rotation, scaling));
+}
+
+void FGE::Engine::UpdateScene (std::vector<FGE::Mesh*> updated)
+{
+    for (auto& it : updated)
+    {
+        Batch* batch = it->GetBatch ();
+        unsigned int matrix_offset = it->GetMatrixOffset ();
+        glm::mat4 matrix = it->GetMatrix ();
+
+        batch->UpdateMatrix (matrix_offset, matrix);
+    }
 }
 
 void FGE::Engine::LoadBatches (std::string shader_key)
@@ -35,14 +56,15 @@ void FGE::Engine::LoadBatches (std::string shader_key)
 
     // TODO auto batch id
 
-    Batch batch (shader_key);
+    Batch* batch = &engine->m_batches.back ();
 
     for (Mesh& it : engine->active_scene->GetMeshes() )
     {
-        batch.PushMesh (&it);
+        // just to see if it works
+        if (!it.GetQuad()) { it.SetTexture ("k_atlas", ""); }
+        batch->PushMesh (&it);
     }
 
-    engine->m_batches.push_back (batch);
 }
 
 
@@ -73,11 +95,18 @@ void FGE::Engine::Render ()
         batch.GetShader ()-> UploadMatrix4 ("uProjection", projection);
         batch.GetShader ()-> UploadMatrix4 ("uView", view);
 
+        // TODO: manage multiple atlases
+
+        batch.GetShader ()-> Upload1i ("uAtlas", 0);
+
         // activate the texture atlas
+        glActiveTexture (GL_TEXTURE0);
         // bind texture atlas
+        glBindTexture (GL_TEXTURE_2D_ARRAY, batch.GetAtlasObject ());
+
         
         // glMultiDrawElementIndirect
-        glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, NULL, batch.GetVertexCount (), 0);
+        glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, NULL, batch.GetMeshCount (), 0);
         
         // cancel the shader
         batch.GetShader ()->Cancel ();
@@ -89,4 +118,25 @@ void FGE::Engine::Render ()
 
     glfwSwapBuffers(engine->m_context->GetWindow());
 
+}
+
+void FGE::Engine::TranslateMesh (Mesh* mesh, glm::vec3 vector, bool keep)
+{
+    if (keep) mesh->Translate (vector);
+    else mesh->SetTranslate (vector);
+    FGE::Engine::UpdateScene ({mesh});
+}
+
+void FGE::Engine::RotateMesh (Mesh* mesh, glm::vec3 vector, bool keep)
+{
+    if (keep) mesh->Rotate (vector);
+    else mesh->SetRotate (vector);
+    FGE::Engine::UpdateScene ({mesh});
+}
+
+void FGE::Engine::ScaleMesh (Mesh* mesh, glm::vec3 vector, bool keep)
+{
+    if (keep) mesh-> Scale (vector);
+    else mesh->SetScale (vector);
+    FGE::Engine::UpdateScene ({mesh});
 }

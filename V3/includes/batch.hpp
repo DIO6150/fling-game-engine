@@ -4,26 +4,20 @@
 
 #include "mesh.hpp"
 #include "shader.hpp"
+#include "texture_atlas.hpp"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
+
 
 #include <stdexcept>
 #include <string>
 
 namespace FGE
 {
-    struct DrawCommand
-    {
-        unsigned int count;
-        unsigned int instance_count;
-        unsigned int first_index;
-        int base_vertex;
-        unsigned int base_instance;
-    };
-
     class Batch
     {
+    private:
         unsigned int m_vao;
         unsigned int m_vbo;
         unsigned int m_ebo;
@@ -32,6 +26,7 @@ namespace FGE
         unsigned int m_tex_coord_ssbo;
 
         Shader* m_shader = nullptr;
+        TextureAtlas* m_atlas = nullptr;
 
         unsigned int m_index_count = 0;
         unsigned int m_vertex_count = 0;
@@ -40,149 +35,77 @@ namespace FGE
         unsigned int m_max_index_count = 0;
         unsigned int m_max_vertex_count = 0;
         unsigned int m_max_mesh_count = 0;
+
+        /**
+         * @brief Resize the buffer objects of the batch.
+         * 
+         * @param nb_mesh The number of mesh to be added.
+         * @param nb_vertex The number of vertices to be added.
+         * @param nb_index The number of indices to be added.
+         */
+        void Resize (int mesh_count, int vertex_count, int index_count);
     
     public:
-        Batch(std::string shader_key);
+        /**
+         * @brief Construct a new FGE::Batch::Batch object
+         * 
+         * @param shader_key The key corresponding to the desired shader.
+         * @param atlas_key The key corresponding to the desired atlas.
+         */
+        Batch(std::string shader_key, std::string atlas_key);
 
-        ~Batch()
-        {
+        /**
+         * @brief Destroy the FGE::Batch::Batch object.
+         * 
+         */
+        ~Batch();
 
-        }
+        /**
+         * @brief Bind all the OpenGL buffer objects of the batch.
+         * 
+         */
+        void BindBuffers ();
 
-        void BindBuffers ()
-        {
-            glBindVertexArray (m_vao);
-            glBindBuffer (GL_ARRAY_BUFFER, m_vbo);
-            glBindBuffer (GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-            glBindBuffer (GL_DRAW_INDIRECT_BUFFER, m_dibo);
-            glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 0, m_matrix_ssbo);
-            glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 1, m_tex_coord_ssbo);
-        }
+        /**
+         * @brief Unbind all the OpenGL buffer objects of the batch.
+         * 
+         */
+        void UnbindBuffers ();
 
-        void UnbindBuffers ()
-        {
-            glBindBuffer (GL_ARRAY_BUFFER, 0);
-            glBindBuffer (GL_ELEMENT_ARRAY_BUFFER, 0);
-            glBindBuffer (GL_DRAW_INDIRECT_BUFFER, 0);
-            glBindBuffer (GL_SHADER_STORAGE_BUFFER, 0);
-            glBindTexture (GL_TEXTURE_2D, 0);
-        }
+        /**
+         * @brief Push a mesh inside the batch.
+         * 
+         * @param mesh A pointer to the mesh to be pushed.
+         */
+        void PushMesh (Mesh* mesh);
 
-        void Resize (int new_size, int new_vertex_size, int new_index_size)
-        {
-            void* old_vbo_data = NULL;
-            void* old_ebo_data = NULL;
-            void* old_dibo_data = NULL;
-            void* old_matrix_ssbo_data = NULL;
-            void* old_texcoords_ssbo_data = NULL;
+        /**
+         * @brief Update the matrix buffer of the batch.
+         * 
+         * @param matrix_offset An offset inside the buffer corresponding to the starting position of the matrix.
+         * @param matrix The matrix to replace the old one.
+         */
+        void UpdateMatrix (unsigned int matrix_offset, glm::mat4 matrix);
 
-            // TODO : There is actually undefined behavior here,
-            // If I get old data with old size into an old size container then fuck me I guess ?
-            // Because the data packed next to it is not mine and therefore i'm shit
+        /**
+         * @brief Returns the number of mesh.
+         * 
+         * @return size_t
+         */
+        size_t GetMeshCount ();
 
-            // 19/01/25 :
-            // Is it still valid as of now ?
-            // I don't remember it has been like 6 months now urghh
+        /**
+         * @brief Returns a pointer to the shader stored.
+         * 
+         * @return FGE::Shader*
+         */
+        Shader* GetShader ();
 
-            if (m_meshes.size() != 0)
-            {
-
-                old_vbo_data = glMapNamedBuffer(m_vbo, GL_READ_WRITE);
-                old_ebo_data = glMapNamedBuffer(m_ebo, GL_READ_WRITE);
-                old_dibo_data = glMapNamedBuffer(m_dibo, GL_READ_WRITE);
-                old_matrix_ssbo_data = glMapNamedBuffer(m_matrix_ssbo, GL_READ_WRITE);
-                old_texcoords_ssbo_data = glMapNamedBuffer(m_tex_coord_ssbo, GL_READ_WRITE);
-
-                if (!old_vbo_data || !old_ebo_data || !old_dibo_data || !old_matrix_ssbo_data || !old_texcoords_ssbo_data)
-                {
-                    /*
-                    if (old_vbo_data)
-                        glUnmapNamedBuffer(m_vbo);
-
-                    if (old_ebo_data)
-                        glUnmapNamedBuffer(m_ebo);
-
-                    if (old_dibo_data)
-                        glUnmapNamedBuffer(m_dibo);
-
-                    if (old_matrix_ssbo_data)
-                        glUnmapNamedBuffer(m_matrix_ssbo);
-
-                    if (old_texcoords_ssbo_data)
-                        glUnmapNamedBuffer(m_tex_coord_ssbo);
-                    */
-
-                    throw std::invalid_argument ("buffers are Null");
-                }
-            }
-
-            m_max_mesh_count += new_size;
-            m_max_vertex_count += new_vertex_size;
-            m_max_index_count += new_index_size;
-
-            glNamedBufferData (m_vbo, m_max_vertex_count * sizeof (Vertex), NULL, GL_DYNAMIC_DRAW);
-            glNamedBufferSubData (m_vbo, 0, m_vertex_count * sizeof (Vertex), old_vbo_data);
-
-            glNamedBufferData (m_ebo, m_max_index_count * sizeof (int), NULL, GL_DYNAMIC_DRAW);
-            glNamedBufferSubData (m_ebo, 0, m_index_count * sizeof (int), old_ebo_data);
-
-            glNamedBufferData (m_dibo, m_max_mesh_count * sizeof (DrawCommand), NULL, GL_DYNAMIC_DRAW);
-            glNamedBufferSubData (m_dibo, 0, m_meshes.size () * sizeof (DrawCommand), old_dibo_data);
-
-            glNamedBufferData (m_matrix_ssbo, m_max_mesh_count * sizeof (glm::mat4), NULL, GL_DYNAMIC_DRAW);
-            glNamedBufferSubData (m_matrix_ssbo, 0, m_meshes.size () * sizeof (glm::mat4), old_matrix_ssbo_data);
-
-            glNamedBufferData (m_tex_coord_ssbo, m_max_mesh_count * sizeof (glm::vec4), NULL, GL_DYNAMIC_DRAW);
-            glNamedBufferSubData (m_tex_coord_ssbo, 0, m_meshes.size () * sizeof (glm::vec4), old_texcoords_ssbo_data);
-        }
-
-        void PushMesh (Mesh* mesh)
-        {
-
-            if (m_vertex_count + mesh->GetVertices ().size () >= m_max_vertex_count || 
-                m_index_count + mesh->GetIndices ().size () >= m_max_index_count)
-            {
-                Resize (1, mesh->GetVertices ().size (), mesh->GetIndices ().size ());
-
-            }
-
-
-            // TODO : Take into account instance rendering
-            DrawCommand command;
-
-            command.count = mesh->GetIndices ().size ();
-            command.instance_count = 1;
-            command.first_index = m_index_count;
-            command.base_vertex = m_vertex_count;
-            command.base_instance = 0;
-
-            // Vertex Data
-            glNamedBufferSubData (m_vbo, m_vertex_count * sizeof (Vertex), mesh->GetVertices ().size () * sizeof (Vertex), mesh->GetVertices ().data ());
-
-            // Index Data
-            glNamedBufferSubData (m_ebo, m_index_count * sizeof (int), mesh->GetIndices ().size () * sizeof (int), mesh->GetIndices ().data ());
-
-            // Draw Command Data
-            glNamedBufferSubData (m_dibo, m_meshes.size () * sizeof (DrawCommand), sizeof (DrawCommand), &command);
-
-            // Matrix Data
-            glm::mat4 model_matrix = mesh->GetMatrix ();
-            glBindBuffer (GL_SHADER_STORAGE_BUFFER, m_matrix_ssbo);
-            glBindBufferBase (GL_SHADER_STORAGE_BUFFER, 0, m_matrix_ssbo);
-            glNamedBufferSubData (m_matrix_ssbo, m_meshes.size () * sizeof (glm::mat4), sizeof (glm::mat4), glm::value_ptr(model_matrix));
-
-            // TODO : see V1 for texture atlas logic (to implement)
-            // {
-            //
-            //
-            // }
-
-            m_meshes.push_back (mesh);
-            m_index_count += mesh->GetIndices ().size ();
-            m_vertex_count += mesh->GetVertices ().size ();
-        }
-
-        size_t GetVertexCount () { return (m_meshes.size ()); }
-        Shader* GetShader () { return (m_shader); }
+        /**
+         * @brief Return the OpenGL object bound to the texture.
+         * 
+         * @return unsigned int 
+         */
+        unsigned int GetAtlasObject ();
     };
 }
