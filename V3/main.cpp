@@ -11,6 +11,11 @@
 
 int main (int argc, char** argv)
 {
+    FGE::Engine::GetInstance ();
+
+
+
+    
     std::vector<FGE::Vertex> vertices = {
         (FGE::Vertex) {0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
         (FGE::Vertex) {0.5f, 0.0f, 0.0f, 1.0f, 0.0f},
@@ -34,23 +39,18 @@ int main (int argc, char** argv)
 
     glm::mat4 origin = glm::translate (glm::mat4 (1.0f), glm::vec3 (-.25f, -.25f, 0.0f));
 
-    FGE::Engine::GetInstance ();
 
-    FGE::Shader default_shader ("assets/shaders/default.vertex", "assets/shaders/default.fragment");
-    FGE::Mesh triangle_base (vertices, indices);
-    FGE::Mesh square_base (vertices_2, indices_2, origin);
-    FGE::TextureAtlas atlas;
-    FGE::Texture tex ("assets/textures/peak.png");
-    FGE::Texture tex2 ("assets/textures/salvation.jpeg");
+
 
     FGE::Engine::RegisterGameObject<std::string> ("k_name_magic_wand", "Magic Wand");
+    FGE::Engine::RegisterGameObject<FGE::Shader> ("k_shader_default", FGE::Shader ("assets/shaders/default.vertex", "assets/shaders/default.fragment"));
+    FGE::Engine::RegisterGameObject<FGE::Mesh> ("k_mesh_triangle", FGE::Mesh (vertices, indices));
+    FGE::Engine::RegisterGameObject<FGE::Mesh> ("k_mesh_square", FGE::Mesh (vertices_2, indices_2, origin));
+    FGE::Engine::RegisterGameObject<FGE::TextureAtlas> ("k_atlas", FGE::TextureAtlas ());
+    FGE::Engine::RegisterGameObject<FGE::Texture> ("k_peak_tex", FGE::Texture ("assets/textures/peak.png"));
+    FGE::Engine::RegisterGameObject<FGE::Texture> ("k_salvation_tex", FGE::Texture ("assets/textures/salvation.jpeg"));
 
-    FGE::Engine::RegisterGameObject<FGE::Shader> ("k_shader_default", default_shader);
-    FGE::Engine::RegisterGameObject<FGE::Mesh> ("k_mesh_triangle", triangle_base);
-    FGE::Engine::RegisterGameObject<FGE::Mesh> ("k_mesh_square", square_base);
-    FGE::Engine::RegisterGameObject<FGE::TextureAtlas> ("k_atlas", atlas);
-    FGE::Engine::RegisterGameObject<FGE::Texture> ("k_peak_tex", tex);
-    FGE::Engine::RegisterGameObject<FGE::Texture> ("k_salvation_tex", tex2);
+
 
     FGE::Engine::CreateBatch ("k_shader_default", "k_atlas");
 

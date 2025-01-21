@@ -43,9 +43,7 @@ namespace FGE
          */
         void Insert (std::string key, T& object)
         {
-            printf ("test 1\n");
             m_objects.insert_or_assign (key, std::move(object));
-            printf ("test 2\n");
         }
 
         /**

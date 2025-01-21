@@ -9,7 +9,7 @@
 - Add uniform cache in shader class
 - Allow mesh to have custom vertex attribute
 - Allow engine to upload custom uniform (flexible render pipeline)
-- Reorganize files according to their dependencies and relevance (core, data, etc...)
+- Reorganize files according to their dependencies and relevance (core, data, resources, etc...)
 - Make a logging class
 - Trouver un remplaçant au lieu de invalid_argument dans FGE::Batch::Resize
 - UpdateMatrix should take a FGE::Mesh instead of the relevant data for consistency
@@ -18,3 +18,5 @@
 - Continue to add relevant Doxygen docs to all class methods
 - Make the iterators work in the FGE::ObjectArray class
 - Make a simple all purpose container class (like the thing in FGE::Engine used to register object)
+
+- Urgent ! Implements Shader copy/move/= method ! Texture n TextureAtlas too !
