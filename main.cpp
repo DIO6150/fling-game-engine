@@ -12,9 +12,6 @@
 int main (int argc, char** argv)
 {
     FGE::Engine::GetInstance ();
-
-
-
     
     std::vector<FGE::Vertex> vertices = {
         (FGE::Vertex) {0.0f, 0.0f, 0.0f, 0.0f, 0.0f},
@@ -29,17 +26,15 @@ int main (int argc, char** argv)
         (FGE::Vertex) {0.0f, 0.5f, 0.0f, 0.0f, 1.0f}
     };
 
-    std::vector<unsigned int> indices ={
+    std::vector<unsigned int> indices = {
         0, 1, 2
     };
 
-    std::vector<unsigned int> indices_2 ={
+    std::vector<unsigned int> indices_2 = {
         0, 1, 2, 2, 3, 0
     };
 
     glm::mat4 origin = glm::translate (glm::mat4 (1.0f), glm::vec3 (-.25f, -.25f, 0.0f));
-
-
 
 
     FGE::Engine::RegisterGameObject<std::string> ("k_name_magic_wand", "Magic Wand");
@@ -49,8 +44,6 @@ int main (int argc, char** argv)
     FGE::Engine::RegisterGameObject<FGE::TextureAtlas> ("k_atlas", FGE::TextureAtlas ());
     FGE::Engine::RegisterGameObject<FGE::Texture> ("k_peak_tex", FGE::Texture ("assets/textures/peak.png"));
     FGE::Engine::RegisterGameObject<FGE::Texture> ("k_salvation_tex", FGE::Texture ("assets/textures/salvation.jpeg"));
-
-
 
     FGE::Engine::CreateBatch ("k_shader_default", "k_atlas");
 

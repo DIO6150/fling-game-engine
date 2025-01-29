@@ -18,5 +18,6 @@
 - Continue to add relevant Doxygen docs to all class methods
 - Make the iterators work in the FGE::ObjectArray class
 - Make a simple all purpose container class (like the thing in FGE::Engine used to register object)
+- Scenes must have lights
 
 - Urgent ! Implements Shader copy/move/= method ! Texture n TextureAtlas too !

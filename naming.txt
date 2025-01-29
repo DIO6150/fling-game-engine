@@ -1,0 +1,6 @@
+order of include directive is :
+    <>
+    ""
+    "file.h"
+
+pointer is on glued to the type
