@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "batch.C": "cpp",
-        "engine.h": "c"
-    },
-    "cmake.ignoreCMakeListsMissing": true
-}

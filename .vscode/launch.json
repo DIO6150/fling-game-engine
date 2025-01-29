@@ -6,7 +6,7 @@
     "configurations":
     [
         {
-            "name": "C Launch (Linux)",
+            "name": "C++ Launch (Linux)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/EngineTest",
@@ -24,7 +24,7 @@
             }
         },
         {
-            "name": "C Launch (Windows)",
+            "name": "C++ Launch (Windows)",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/EngineTest.exe",

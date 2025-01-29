@@ -19,5 +19,6 @@
 - Make the iterators work in the FGE::ObjectArray class
 - Make a simple all purpose container class (like the thing in FGE::Engine used to register object)
 - Scenes must have lights
+- Use string view instead of string when needed (keys)
 
 - Urgent ! Implements Shader copy/move/= method ! Texture n TextureAtlas too !
